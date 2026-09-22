@@ -22,3 +22,20 @@ input {
 .leaflet-container {
   font-family: inherit;
 }
+
+/* Ensure custom Leaflet divIcon containers do not have background or border outlines */
+.leaflet-div-icon.origin-pin,
+.leaflet-div-icon.dest-pin,
+.leaflet-div-icon.custom-station-pin,
+.leaflet-div-icon.simulated-car-marker,
+.leaflet-div-icon.moving-car-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}

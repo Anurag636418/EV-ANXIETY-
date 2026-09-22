@@ -1,0 +1,119 @@
+[
+  {
+    "id": "tata_nexon_ev_45",
+    "make": "Tata",
+    "model": "Nexon.ev Empowered+ 45",
+    "battery_capacity_kwh": 45.0,
+    "efficiency_kwh_per_100km": 15.0,
+    "connector_types": ["CCS2"],
+    "source_reference": "Autocar India Real-World Range Test / Team-BHP Estimates"
+  },
+  {
+    "id": "tata_nexon_ev_30",
+    "make": "Tata",
+    "model": "Nexon.ev Creative 30",
+    "battery_capacity_kwh": 30.0,
+    "efficiency_kwh_per_100km": 14.5,
+    "connector_types": ["CCS2"],
+    "source_reference": "Evo India / Overdrive Tests"
+  },
+  {
+    "id": "tata_punch_ev_lr",
+    "make": "Tata",
+    "model": "Punch.ev Long Range",
+    "battery_capacity_kwh": 35.0,
+    "efficiency_kwh_per_100km": 14.0,
+    "connector_types": ["CCS2"],
+    "source_reference": "Autocar India Tests"
+  },
+  {
+    "id": "tata_tiago_ev_lr",
+    "make": "Tata",
+    "model": "Tiago.ev Long Range",
+    "battery_capacity_kwh": 24.0,
+    "efficiency_kwh_per_100km": 12.5,
+    "connector_types": ["CCS2"],
+    "source_reference": "Autocar India Tests"
+  },
+  {
+    "id": "mg_zs_ev",
+    "make": "MG",
+    "model": "ZS EV",
+    "battery_capacity_kwh": 50.3,
+    "efficiency_kwh_per_100km": 15.5,
+    "connector_types": ["CCS2"],
+    "source_reference": "Autocar India / EV Database"
+  },
+  {
+    "id": "mg_comet_ev",
+    "make": "MG",
+    "model": "Comet EV",
+    "battery_capacity_kwh": 17.3,
+    "efficiency_kwh_per_100km": 11.0,
+    "connector_types": ["Type 2"],
+    "source_reference": "Autocar India Real-World Tests"
+  },
+  {
+    "id": "mahindra_xuv400",
+    "make": "Mahindra",
+    "model": "XUV400 EL",
+    "battery_capacity_kwh": 39.4,
+    "efficiency_kwh_per_100km": 15.8,
+    "connector_types": ["CCS2"],
+    "source_reference": "Autocar India Real-World Tests"
+  },
+  {
+    "id": "byd_atto_3",
+    "make": "BYD",
+    "model": "Atto 3",
+    "battery_capacity_kwh": 60.48,
+    "efficiency_kwh_per_100km": 15.0,
+    "connector_types": ["CCS2"],
+    "source_reference": "EV Database / Autocar India"
+  },
+  {
+    "id": "byd_seal_rwd",
+    "make": "BYD",
+    "model": "Seal RWD",
+    "battery_capacity_kwh": 82.5,
+    "efficiency_kwh_per_100km": 16.5,
+    "connector_types": ["CCS2"],
+    "source_reference": "EV Database"
+  },
+  {
+    "id": "hyundai_ioniq_5",
+    "make": "Hyundai",
+    "model": "Ioniq 5 RWD",
+    "battery_capacity_kwh": 72.6,
+    "efficiency_kwh_per_100km": 16.5,
+    "connector_types": ["CCS2"],
+    "source_reference": "EV Database"
+  },
+  {
+    "id": "kia_ev6_awd",
+    "make": "Kia",
+    "model": "EV6 AWD",
+    "battery_capacity_kwh": 77.4,
+    "efficiency_kwh_per_100km": 17.2,
+    "connector_types": ["CCS2"],
+    "source_reference": "EV Database"
+  },
+  {
+    "id": "citroen_ec3",
+    "make": "Citroen",
+    "model": "eC3",
+    "battery_capacity_kwh": 29.2,
+    "efficiency_kwh_per_100km": 14.0,
+    "connector_types": ["CCS2"],
+    "source_reference": "Autocar India Tests"
+  },
+  {
+    "id": "volvo_xc40_recharge",
+    "make": "Volvo",
+    "model": "XC40 Recharge Twin",
+    "battery_capacity_kwh": 78.0,
+    "efficiency_kwh_per_100km": 20.5,
+    "connector_types": ["CCS2"],
+    "source_reference": "EV Database"
+  }
+]
