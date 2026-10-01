@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: ev-backend
+    env: python
+    buildCommand: "cd Backend && pip install -r requirements.txt"
+    startCommand: "cd Backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: APP_ENV
+        value: production
+      - key: FRONTEND_ORIGINS
+        value: "https://your-frontend.vercel.app" # UPDATE THIS AFTER VERCEL DEPLOY
+      - key: OPENCHARGERMAP_API_KEY
+        sync: false
+      - key: TOM_TOM_API_KEY
+        sync: false
