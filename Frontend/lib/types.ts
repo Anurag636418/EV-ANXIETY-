@@ -51,6 +51,7 @@ export type ChargingProviderMetadata = {
   fetched_at: string;
   latency_ms: number;
   supports_live_availability: boolean;
+  raw_source?: Record<string, unknown>;
 };
 
 export type ChargingStation = {

@@ -26,6 +26,10 @@ class ChargingRecommendationService:
             reasons.append(f"✓ {int(max_power)} kW ultra-fast charger")
         elif max_power >= 50:
             reasons.append(f"✓ {int(max_power)} kW fast charger")
+        elif max_power > 0 and max_power < 25:
+            reasons.append(f"⚠ Slow charger ({int(max_power)} kW) - selected as last resort")
+        elif max_power == 0:
+            reasons.append("⚠ Unknown charging speed")
             
         # Distance reason
         if breakdown.detour_km <= 1.0:

@@ -368,6 +368,16 @@ export function EvMap({
     }
   }, [locationStatus]);
 
+  // Fix for Leaflet grey-box rendering bug
+  useEffect(() => {
+    if (map) {
+      const timer = setTimeout(() => {
+        map.invalidateSize();
+      }, 250);
+      return () => clearTimeout(timer);
+    }
+  }, [map]);
+
   const mapOptions = useMemo(
     () => ({
       attributionControl: true,
@@ -388,7 +398,7 @@ export function EvMap({
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=cb1_3t6w_1_da1b61a76dca3e7fca456dad"
+          url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png${process.env.NEXT_PUBLIC_CARTO_API_KEY ? `?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY}` : ''}`}
         />
         <CurrentLocationMarker onStatusChange={setLocationStatus} />
 

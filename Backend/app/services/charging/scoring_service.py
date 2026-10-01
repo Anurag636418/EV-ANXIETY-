@@ -75,7 +75,18 @@ class ChargingScoringService:
         if station.connectors:
             max_power = max((c.power_kw or 0.0) for c in station.connectors)
             
-        norm_power = min(max_power / 150.0, 1.0)
+        penalty = 0.0
+        if max_power > 0 and max_power < 25.0:
+            # Extremely slow AC charger. Heavily penalize for mid-trip charging.
+            norm_power = 0.0
+            penalty = -50.0  # Ensure any fast charger off-route beats this
+        elif max_power == 0.0:
+            # Unknown power. Assume standard 50kW but penalize slightly for uncertainty.
+            norm_power = 50.0 / 150.0
+            penalty = -10.0
+        else:
+            norm_power = min(max_power / 150.0, 1.0)
+            
         breakdown.power_score = norm_power * self.w_power * 100
         
         # 3. Operator Score (Preferred gets 1.0, others 0.0)
@@ -94,7 +105,8 @@ class ChargingScoringService:
             breakdown.distance_score + 
             breakdown.power_score + 
             breakdown.operator_score + 
-            breakdown.connectors_score
+            breakdown.connectors_score +
+            penalty
         )
         
         return breakdown

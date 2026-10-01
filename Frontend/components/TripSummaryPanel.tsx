@@ -26,8 +26,8 @@ export function TripSummaryPanel({
 
   if (!itinerary || itinerary.length === 0) {
     return (
-      <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300 h-full max-h-screen overflow-y-auto">
-        <div className="p-4">
+      <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div>
           <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
             <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">
               Trip Summary
@@ -79,26 +79,47 @@ export function TripSummaryPanel({
           </div>
         </div>
 
-        {/* Footer Controls */}
-        <div className="p-4 border-t border-slate-200 bg-white sticky bottom-0 z-10 mt-auto">
-          <button
-            onClick={onToggleStations}
-            className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-lg transition-colors"
+        {/* Show alternative stations toggle */}
+        <button
+          onClick={onToggleStations}
+          className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
-            {showAllStations
-              ? "Hide other stations on map"
-              : "Show all stations on map"}
-          </button>
-        </div>
+            {showAllStations ? (
+              <>
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </>
+            ) : (
+              <>
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8 12h8" />
+                <path d="M12 8v8" />
+              </>
+            )}
+          </svg>
+          {showAllStations
+            ? "Hide alternative stations"
+            : "Show alternative stations"}
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col animate-in fade-in slide-in-from-bottom-2 duration-300 h-full max-h-screen overflow-y-auto">
+    <div className="flex flex-col animate-in fade-in slide-in-from-bottom-2 duration-300">
       {/* ABRP Header */}
-      <div className="bg-white border-b border-slate-200 px-5 py-4 shadow-sm sticky top-0 z-10">
-        <h1 className="text-lg font-bold text-slate-900 mb-1">Route Plan</h1>
+      <div className="border-b border-slate-200 pb-4 mb-2">
+        <h2 className="text-lg font-bold text-slate-900 mb-1">Route Plan</h2>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-2xl font-black text-slate-800">
@@ -141,7 +162,7 @@ export function TripSummaryPanel({
       </div>
 
       {/* ABRP Timeline */}
-      <div className="p-4">
+      <div className="py-2">
         {itinerary.map((segment, index) => {
           if (segment.segment_type === "DRIVE") {
             const isLast = index === itinerary.length - 1;
@@ -341,14 +362,37 @@ export function TripSummaryPanel({
         })}
       </div>
 
-      {/* Footer Controls */}
-      <div className="p-4 border-t border-slate-200 bg-white sticky bottom-0 z-10 mt-auto">
+      {/* Show alternative stations toggle */}
+      <div className="pt-3 mt-2 border-t border-slate-100">
         <button
           onClick={onToggleStations}
-          className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-lg transition-colors"
+          className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
         >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            {showAllStations ? (
+              <>
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </>
+            ) : (
+              <>
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8 12h8" />
+                <path d="M12 8v8" />
+              </>
+            )}
+          </svg>
           {showAllStations
-            ? "Hide other stations on map"
+            ? "Hide alternative stations"
             : "Show alternative stations"}
         </button>
       </div>

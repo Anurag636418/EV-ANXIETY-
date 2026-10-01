@@ -94,14 +94,21 @@ class TripPlanningService:
         itinerary = []
         
         if request.vehicle:
-            # Vehicle physics setup
-            eff = request.vehicle.efficiency_kwh_per_100km or 15.0
-            cap = request.vehicle.battery_capacity_kwh or 40.0
+            # Vehicle physics setup — priority: request explicit > DB lookup > hardcoded default
+            eff = request.vehicle.efficiency_kwh_per_100km
+            cap = request.vehicle.battery_capacity_kwh
+            
             if request.vehicle.vehicle_id:
                 v_db = self._range.db.get_vehicle(request.vehicle.vehicle_id)
                 if v_db:
-                    eff = eff or v_db.efficiency_kwh_per_100km
-                    cap = cap or v_db.battery_capacity_kwh
+                    if not eff:
+                        eff = v_db.efficiency_kwh_per_100km
+                    if not cap:
+                        cap = v_db.battery_capacity_kwh
+            
+            # Final fallback defaults
+            eff = eff or 15.0
+            cap = cap or 40.0
             
             # Start conditions
             current_soc = float(request.vehicle.current_soc_percent or 100.0)
@@ -116,7 +123,17 @@ class TripPlanningService:
             
             current_origin_name = request.origin.display_name or "Origin"
             
-            while True:
+            logger.info(
+                "[trip] itinerary_engine vehicle=%s cap=%.1f kWh eff=%.1f kWh/100km soc=%.1f%% trip=%.1f km stations_ranked=%d",
+                request.vehicle.vehicle_id or "custom",
+                cap, eff, current_soc, total_trip_km, len(ranked_stations)
+            )
+            
+            used_station_ids: set[str] = set()  # Track stations already scheduled
+            max_iterations = 20  # Safety valve to prevent infinite loops
+            iteration = 0
+            
+            while iteration < max_iterations:
                 # Calculate how far we can go on current SOC
                 usable_soc = current_soc - MIN_SOC
                 reachable_km = (usable_soc / 100.0) * cap / (eff / 100.0)
@@ -143,6 +160,7 @@ class TripPlanningService:
                     break
                     
                 else:
+                    iteration += 1
                     # We cannot reach destination. Find the best charger in range.
                     max_reach_along_route = current_distance_km + reachable_km
                     
@@ -150,20 +168,28 @@ class TripPlanningService:
                         pair for pair in ranked_stations 
                         if pair[1].along_route_km > current_distance_km + 5.0 # at least 5km ahead
                         and pair[1].along_route_km <= max_reach_along_route
+                        and pair[0].id not in used_station_ids
                     ]
                     
                     if not valid_pairs:
-                        logger.warning("Trip impossible within safe range, looking for any station ahead.")
+                        logger.warning(
+                            "[trip] iter=%d No stations within safe range (%.1f-%.1f km). Looking for any station ahead.",
+                            iteration, current_distance_km, max_reach_along_route
+                        )
                         # Fallback: Just find the next station ahead even if it means negative SOC
                         valid_pairs = [
                             pair for pair in ranked_stations
                             if pair[1].along_route_km > current_distance_km + 5.0
+                            and pair[0].id not in used_station_ids
                         ]
                         # Sort by how close they are
                         valid_pairs.sort(key=lambda x: x[1].along_route_km)
                     
                     if not valid_pairs:
-                        logger.warning("No stations ahead at all! Appending final drive with negative SOC.")
+                        logger.warning(
+                            "[trip] iter=%d No stations ahead at all! Appending final drive with negative SOC. pos=%.1f km dest=%.1f km",
+                            iteration, current_distance_km, total_trip_km
+                        )
                         # Final drive to destination with negative SOC
                         leg_km = total_trip_km - current_distance_km
                         leg_energy = (leg_km / 100.0) * eff
@@ -196,6 +222,11 @@ class TripPlanningService:
                         # If no stations are in the ideal window, just pick the furthest available station
                         valid_pairs.sort(key=lambda x: x[1].along_route_km, reverse=True)
                         best_station, breakdown = valid_pairs[0]
+                    
+                    logger.info(
+                        "[trip] iter=%d charging_stop=%s at_km=%.1f detour=%.1f km",
+                        iteration, best_station.name, breakdown.along_route_km, breakdown.detour_km
+                    )
                     
                     # 1. Drive to charger
                     leg_km = breakdown.along_route_km - current_distance_km
@@ -251,6 +282,7 @@ class TripPlanningService:
                     current_soc = target_soc
                     current_distance_km = breakdown.along_route_km
                     current_origin_name = best_station.name
+                    used_station_ids.add(best_station.id)
 
         return TripPlanResponse(
             route=route,

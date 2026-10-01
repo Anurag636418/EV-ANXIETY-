@@ -5,6 +5,7 @@ import { useState, useMemo, useCallback } from "react";
 import { TripSummaryPanel } from "@/components/TripSummaryPanel";
 import { TripControls, type TripDraft } from "@/components/TripControls";
 import { SimulationControls } from "@/components/SimulationControls";
+import { EmergencyPanel } from "@/components/EmergencyPanel";
 import type { SimulationState } from "@/components/TripSimulationLayer";
 import { planTrip } from "@/lib/api";
 import type {
@@ -165,7 +166,7 @@ export function TripPlannerShell() {
       {/* Floating UI overlay */}
       <div className="absolute inset-0 z-10 flex flex-col pointer-events-none md:p-4">
         {/* Unified Header & Panel on Desktop */}
-        <div className="flex flex-col md:rounded-2xl md:shadow-xl md:w-[420px] bg-white overflow-hidden mt-auto md:mt-0 pointer-events-auto transition-all duration-300">
+        <div className="flex flex-col md:rounded-2xl md:shadow-xl md:w-[420px] bg-white md:overflow-hidden mt-auto md:mt-0 pointer-events-auto transition-all duration-300">
           {/* Header with clean EV branding */}
           <header className="flex items-center justify-between bg-white/95 backdrop-blur px-4 py-3 border-b border-slate-100 shrink-0">
             <div className="flex items-center gap-2.5">
@@ -202,7 +203,7 @@ export function TripPlannerShell() {
                 : panelState === "peek"
                   ? "h-[35vh] md:h-auto"
                   : "h-[55vh] md:h-auto md:max-h-[calc(100vh-6.5rem)]"
-            }`}
+            } overflow-hidden`}
           >
             {/* Mobile Drag / Collapse Handle */}
             <div
@@ -225,7 +226,7 @@ export function TripPlannerShell() {
               </span>
             </div>
 
-            <div className="overflow-y-auto p-4 md:p-5 flex-1 relative">
+            <div className="overflow-y-auto p-4 md:p-5 flex-1">
               {/* Show controls when planning initial trip or editing draft */}
               {showTripForm && !isPlanningRoute && (
                 <div className="animate-in fade-in duration-300">
@@ -304,6 +305,9 @@ export function TripPlannerShell() {
           </div>
         </div>
       </div>
+      
+      {/* Global Emergency Assistance SOS Button & Panel */}
+      <EmergencyPanel selectedVehicleId={tripDraft.vehicle?.vehicle_id} />
     </main>
   );
 }

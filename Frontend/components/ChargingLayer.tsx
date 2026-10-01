@@ -214,11 +214,12 @@ export const ChargingLayer = memo(function ChargingLayer({
         0,
       );
       const isFastDc = maxPower >= 50;
+      const hasLive = station.provider_metadata?.supports_live_availability;
 
       const icon = L.divIcon({
         className: "custom-station-pin",
         html: `
-          <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 34px; height: 34px;">
+          <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px;">
             ${
               isRecommended
                 ? '<div style="position: absolute; inset: -2px; border-radius: 9999px; background: rgba(245, 158, 11, 0.45); animation: ping 1.5s cubic-bezier(0,0,0.2,1) infinite;"></div>'
@@ -242,6 +243,25 @@ export const ChargingLayer = memo(function ChargingLayer({
               ${isRecommended ? "⭐" : "⚡"}
             </div>
             ${
+              hasLive
+                ? `<div style="
+                    position: absolute;
+                    top: -3px;
+                    right: -4px;
+                    background: #059669;
+                    color: #ffffff;
+                    font-size: 7px;
+                    font-weight: 800;
+                    padding: 1px 3px;
+                    border-radius: 4px;
+                    border: 1.5px solid #ffffff;
+                    letter-spacing: 0.5px;
+                    line-height: 1;
+                    text-transform: uppercase;
+                  ">LIVE</div>`
+                : ""
+            }
+            ${
               isFastDc && !isRecommended
                 ? `<div style="
                     position: absolute;
@@ -259,8 +279,8 @@ export const ChargingLayer = memo(function ChargingLayer({
             }
           </div>
         `,
-        iconSize: [34, 34],
-        iconAnchor: [17, 17],
+        iconSize: [38, 38],
+        iconAnchor: [19, 19],
       });
       iconMap.set(station.id, icon);
     }

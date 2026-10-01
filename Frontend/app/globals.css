@@ -21,6 +21,8 @@ input {
 
 .leaflet-container {
   font-family: inherit;
+  height: 100% !important;
+  width: 100% !important;
 }
 
 /* Ensure custom Leaflet divIcon containers do not have background or border outlines */

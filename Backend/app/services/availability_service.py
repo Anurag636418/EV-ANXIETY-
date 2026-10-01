@@ -25,14 +25,17 @@ class AvailabilityService:
         provider_name = request.provider_metadata.provider
         
         # Extract availability_id from raw_source
-        raw_source = request.provider_metadata.raw_source
+        raw_source = request.provider_metadata.raw_source or {}
         if provider_name == "TomTom":
             availability_id = raw_source.get("dataSources", {}).get("chargingAvailability", {}).get("id")
         else:
             availability_id = None
             
         if not availability_id:
-            raise ValueError(f"No availability ID found for station {request.station_id}")
+            raise ValueError(
+                f"No availability ID found for station {request.station_id}. "
+                f"This station may not support live availability."
+            )
             
         cache_key = f"{provider_name}:{availability_id}"
         
