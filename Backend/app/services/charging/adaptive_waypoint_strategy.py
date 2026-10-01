@@ -23,6 +23,19 @@ class AdaptiveWaypointStrategy(ChargingSearchStrategy):
         if not coordinates:
             return []
             
+        # Calculate total route distance first
+        total_dist = 0.0
+        for i in range(1, len(coordinates)):
+            prev = coordinates[i-1]
+            curr = coordinates[i]
+            total_dist += self._haversine(prev[0], prev[1], curr[0], curr[1])
+            
+        # If route is very long, increase the interval so we cover the whole route within max_waypoints
+        effective_interval = self.interval_km
+        if (total_dist / effective_interval) > self.max_waypoints:
+            effective_interval = total_dist / self.max_waypoints
+            logger.info(f"[charging] Route is very long ({total_dist:.1f}km). Adjusted waypoint interval to {effective_interval:.1f}km to fit within {self.max_waypoints} api calls.")
+            
         waypoints = [coordinates[0]]
         accumulated_dist = 0.0
         
@@ -32,17 +45,12 @@ class AdaptiveWaypointStrategy(ChargingSearchStrategy):
             dist = self._haversine(prev[0], prev[1], curr[0], curr[1])
             accumulated_dist += dist
             
-            if accumulated_dist >= self.interval_km:
+            if accumulated_dist >= effective_interval:
                 waypoints.append(curr)
                 accumulated_dist = 0.0
                 
         # Always include the destination if it's far enough from the last waypoint
         if len(waypoints) == 1 or self._haversine(waypoints[-1][0], waypoints[-1][1], coordinates[-1][0], coordinates[-1][1]) > 5.0:
             waypoints.append(coordinates[-1])
-            
-        # Hard cap to prevent runaway API costs
-        if len(waypoints) > self.max_waypoints:
-            logger.warning("[charging] waypoints exceeded max %d, truncating", self.max_waypoints)
-            waypoints = waypoints[:self.max_waypoints]
             
         return waypoints
